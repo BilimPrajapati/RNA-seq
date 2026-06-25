@@ -1,3 +1,23 @@
+
+#!/bin/bash
+#SBATCH --job-name=rna_seq_pipeline
+#SBATCH --partition=cpu
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=60G
+#SBATCH --time=24:00:00
+#SBATCH --output=rna_seq_pipeline.out
+#SBATCH --error=rna_seq_pipeline.err
+
+# Load required modules
+module load fastp
+module load STAR
+module load samtools
+module load subread
+module load R
+
+
 I) Quality Control and Read Trimming with Fastp
 Raw paired-end RNA-seq reads were processed using Fastp to remove adapter sequences and low-quality bases.  Generates quality-control reports for each sample.
 
