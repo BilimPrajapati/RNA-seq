@@ -19,7 +19,7 @@ module load R
 
 
 # I) Quality Control and Read Trimming with Fastp
-#Raw paired-end RNA-seq reads were processed using Fastp to remove adapter sequences and low-quality bases.  Generates quality-control reports for each sample.
+# Raw paired-end RNA-seq reads were processed using Fastp to remove adapter sequences and low-quality bases.  Generates quality-control reports for each sample.
 
 #Command:
 
