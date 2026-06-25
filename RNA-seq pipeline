@@ -18,10 +18,10 @@ module load subread
 module load R
 
 
-I) Quality Control and Read Trimming with Fastp
-Raw paired-end RNA-seq reads were processed using Fastp to remove adapter sequences and low-quality bases.  Generates quality-control reports for each sample.
+# I) Quality Control and Read Trimming with Fastp
+#Raw paired-end RNA-seq reads were processed using Fastp to remove adapter sequences and low-quality bases.  Generates quality-control reports for each sample.
 
-Command:
+#Command:
 
 fastp \
 -i sample_R1.fastq.gz \
@@ -31,10 +31,10 @@ fastp \
 -h sample_report.html \
 -j sample_report.json
 
-II) Genome Index Generation with STAR
-Reference genome was indexed using STAR together with the corresponding gene annotation (GTF) file. Allows STAR to efficiently align RNA-seq reads and detect splice junctions.
+# II) Genome Index Generation with STAR
+# Reference genome was indexed using STAR together with the corresponding gene annotation (GTF) file. Allows STAR to efficiently align RNA-seq reads and detect splice junctions.
 
-Command:
+#Command:
 
 STAR \
 --runMode genomeGenerate \
@@ -44,10 +44,10 @@ STAR \
 --genomeSAindexNbases 13 \
 --genomeChrBinNbits 16
 
-III) Read Alignment with STAR
-Trimmed reads were aligned to the reference genome using STAR in two-pass mode. Two-pass approach improves splice junction detection and alignment accuracy. Aligned reads written to coordinate-sorted BAM files.
+# III) Read Alignment with STAR
+# Trimmed reads were aligned to the reference genome using STAR in two-pass mode. Two-pass approach improves splice junction detection and alignment accuracy. Aligned reads written to coordinate-sorted BAM files.
 
-Command:
+#Command:
 
 STAR \
 --genomeDir genome_index \
@@ -58,19 +58,19 @@ STAR \
 --outSAMtype BAM SortedByCoordinate \
 --outFileNamePrefix sample_
 
-IV) Duplicate Read Removal
-Duplicate reads generated during PCR amplification were removed using SAMtools. Reduction of potential biases in downstream analyses.
+# IV) Duplicate Read Removal
+# Duplicate reads generated during PCR amplification were removed using SAMtools. Reduction of potential biases in downstream analyses.
 
-Command:
+#Command:
 
 samtools markdup -r \
 sample.sorted.bam \
 sample.markdup.bam
-V) Mapping Quality Filtering and BAM Indexing
 
-Reads with mapping quality scores below 30 were removed to retain only confidently aligned reads. The filtered BAM files were then indexed for efficient access to genomic regions.
+# V) Mapping Quality Filtering and BAM Indexing
+#Reads with mapping quality scores below 30 were removed to retain only confidently aligned reads. The filtered BAM files were then indexed for efficient access to genomic regions.
 
-Command:
+#Command:
 
 samtools view \
 -b \
@@ -80,10 +80,11 @@ sample.markdup.bam \
 
 samtools index sample.unique.bam
 
-VI) Generation of BigWig Coverage Files
-Coverage tracks were generated using deepTools (bamCoverage) and normalized using RPKM. The resulting BigWig files can be visualized in genome browsers such as IGV.
 
-Command:
+# VI) Generation of BigWig Coverage Files
+# Coverage tracks were generated using deepTools (bamCoverage) and normalized using RPKM. The resulting BigWig files can be visualized in genome browsers such as IGV.
+
+#Command:
 
 bamCoverage \
 -b sample.unique.bam \
@@ -91,11 +92,11 @@ bamCoverage \
 --normalizeUsing RPKM
 
 
-VII) Gene Quantification with FeatureCounts
-Following read alignment and BAM file processing, gene-level read counts were generated using FeatureCounts. 
-Assigns aligned reads to annotated genes and produces a count matrix that serves as the input for differential expression analysis.
+# VII) Gene Quantification with FeatureCounts
+# Following read alignment and BAM file processing, gene-level read counts were generated using FeatureCounts. 
+# Assigns aligned reads to annotated genes and produces a count matrix that serves as the input for differential expression analysis.
 
-Command:
+# Command:
 
 featureCounts \
 -T 8 \
@@ -104,16 +105,16 @@ featureCounts \
 -o gene_counts.txt \
 mapping_results/*.bam
 
-Notes:
--p is used for paired-end RNA-seq data.
-gene_counts.txt contains the number of reads assigned to each gene for every sample.
+# Notes:
+# -p is used for paired-end RNA-seq data.
+# gene_counts.txt contains the number of reads assigned to each gene for every sample.
 
-VIII) Differential Expression Analysis with DESeq2
-Differential expression analysis was performed using DESeq2 in R. 
-DESeq2 normalizes read counts, models count variation between biological replicates, and identifies genes that are significantly differentially expressed between experimental groups.
+# VIII) Differential Expression Analysis with DESeq2
+# Differential expression analysis was performed using DESeq2 in R. 
+# DESeq2 normalizes read counts, models count variation between biological replicates, and identifies genes that are significantly differentially expressed between experimental groups.
 
 
-R script : 
+#R script : 
 library(DESeq2)
 
 # Read count matrix
@@ -134,20 +135,18 @@ res <- results(dds)
 # Save results
 write.csv(as.data.frame(res), file = "DESeq2_results.csv")
 
-The resulting output("DESeq2_results.csv") contains log2 fold changes, p-values, and adjusted p-values (FDR) for each gene, 
-allowing identification of genes that are differentially expressed between the conditions being compared.
+# The resulting output("DESeq2_results.csv") contains log2 fold changes, p-values, and adjusted p-values (FDR) for each gene, 
+# allowing identification of genes that are differentially expressed between the conditions being compared.
 
 
-IX) Principal Component Analysis (PCA)
-To visualize sample clustering and assess whether biological replicates group together.
+# IX) Principal Component Analysis (PCA): To visualize sample clustering and assess whether biological replicates group together.
 
-R script :
+#R script :
 vsd <- vst(dds)
 plotPCA(vsd, intgroup="condition")
 
-X) Volcano Plot
-Visualizes significantly upregulated and downregulated genes.
+# X) Volcano Plot : Visualizes significantly upregulated and downregulated genes.
 
-R script :
+#R script :
 plot(res$log2FoldChange, -log10(res$padj))
 
