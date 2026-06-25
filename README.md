@@ -8,16 +8,10 @@ This repository contains a complete RNA-seq data analysis workflow performed on 
 The workflow was implemented on a high-performance computing (HPC) cluster using SLURM job scheduling and standard bioinformatics tools.
 
 Workflow Summary
-Raw FASTQ files
-        ↓
-Fastp (quality control & trimming)
-        ↓
-STAR (genome indexing & alignment)
-        ↓
-BAM processing (duplicate removal & filtering)
-        ↓
-BigWig generation (coverage visualization)
-        ↓
-FeatureCounts (gene-level quantification)
-        ↓
-DESeq2 (differential expression analysis)
+1. Raw FASTQ files
+2. Fastp (quality control & trimming)
+3. STAR (genome indexing & alignment)
+4. BAM processing (duplicate removal & filtering)
+5. BigWig generation (coverage visualization)
+6. FeatureCounts (gene-level quantification)
+7. DESeq2 (differential expression analysis)
